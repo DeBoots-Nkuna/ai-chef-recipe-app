@@ -1,0 +1,64 @@
+/* LAYOUT */
+
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+}
+
+header {
+  padding: 2.5em 1.5em;
+}
+
+.header-container,
+.input-container {
+  max-width: 800px;
+  min-width: 500px;
+}
+
+.header-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5em;
+  border-bottom: 1px solid #141413;
+  margin: 0 auto;
+}
+
+.chef-logo {
+  width: 43px;
+}
+
+.input-container {
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  gap: 0.7em;
+}
+
+.input-container input {
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  padding: 0.5625em 0.8125em;
+  flex-grow: 1;
+  min-width: 150px;
+  max-width: 400px;
+}
+
+.input-container button {
+  font-family: inherit;
+  border-radius: 6px;
+  border: none;
+  background-color: #141413;
+  color: #fafaf8;
+  width: 150px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* TYPOGRAPHY */
+
+.header-container h1 {
+  font-size: 2em;
+  font-weight: 400;
+  color: #141413;
+}

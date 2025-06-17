@@ -1,3 +1,10 @@
+import { Header } from './components/Header'
+import { Main } from './components/Main'
 export const App = () => {
-  return <h2>HeyChef</h2>
+  return (
+    <>
+      <Header />
+      <Main />
+    </>
+  )
 }
