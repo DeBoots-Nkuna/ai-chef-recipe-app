@@ -46,11 +46,9 @@ export const Main = () => {
       setShowRecipe((prevShowRecipe) => !prevShowRecipe)
     } catch (error) {
       console.error(error.message)
-
       setRecipe('❗Oops, Something went wrong.')
     } finally {
       setIsLoading((prevIsLoading) => !prevIsLoading)
-      setShowRecipe((prevShowRecipe) => !prevShowRecipe)
     }
   }
 
@@ -73,7 +71,7 @@ export const Main = () => {
       {/* loading indicator */}
       {isLoading && <p className="loading">Cooking up your recipe...</p>}
       {/* display recipe generated. */}
-      {showRecipe && !isLoading && <Recipe recipe={recipe} />}
+      {showRecipe && <Recipe recipe={recipe} />}
     </main>
   )
 }
