@@ -9,6 +9,8 @@ export async function onRequestPost({ request, env }) {
   //constructing prompt for the modal
   const prompt = `items: ${ingredients.join(',')}`
 
+  console.log('Token prefix:', (env.HUGGINGFACE_API_KEY || '').slice(0, 8))
+
   //invoking Hugging Face AI Modal
   const hgFaceRes = await fetch(
     'https://api-inference.huggingface.co/models/flax-community/t5-recipe-generation',
