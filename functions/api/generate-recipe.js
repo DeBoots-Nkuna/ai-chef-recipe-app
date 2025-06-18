@@ -8,7 +8,9 @@ export async function onRequestPost({ request, env }) {
   }
 
   //constructing prompt for the modal
-  const prompt = `Generate a recipe using ingredients: ${ingredients.join(',')}`
+  const prompt =
+    `Generate a recipe using only the following ingredients — do not add any others:\n` +
+    `${ingredients.join(', ')}`
 
   //collecting tokens
   const tokens = (env.HUGGINGFACE_API_KEY || '').trim()
