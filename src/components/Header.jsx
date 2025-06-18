@@ -1,4 +1,4 @@
-import chefLogo from '../assets/Chef-Icon.png'
+import chefLogo from '../assets/chef-logo.png'
 
 export const Header = () => {
   return (
