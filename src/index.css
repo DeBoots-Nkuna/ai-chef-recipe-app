@@ -102,6 +102,29 @@ main > section > form > button {
   margin-bottom: 8px;
 }
 
+/* Add this to your global CSS file (e.g. src/index.css or App.css) */
+
+.loading {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem 0;
+  font-size: 1.1rem;
+  color: #555;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
 /* TYPOGRAPHY */
 
 header > h1 {
