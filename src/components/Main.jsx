@@ -35,15 +35,10 @@ export const Main = () => {
         throw new Error(`HTTP Error! Status: ${response.status}`)
 
       //retrieving the data
-      const { recipe: raw } = await response.json()
-
-      //cleaning returned data
-      const cleanedData = raw
-        .replace(/^Generate a recipe[^\n]*\n*\n*/i, '')
-        .trim()
+      const { recipe } = await response.json()
 
       //updating state
-      setRecipe(cleanedData)
+      setRecipe(recipe)
       setShowRecipe(true)
     } catch (error) {
       console.error(error.message)
@@ -73,7 +68,7 @@ export const Main = () => {
       {/* loading indicator */}
       {isLoading && <p className="loading">Cooking up your recipe...</p>}
       {/* display recipe generated. */}
-      {isLoading && showRecipe && <Recipe recipe={recipe} />}
+      {!isLoading && showRecipe && <Recipe recipe={recipe} />}
     </main>
   )
 }
