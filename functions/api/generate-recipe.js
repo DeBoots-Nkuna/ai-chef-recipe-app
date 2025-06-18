@@ -1,8 +1,9 @@
 //function to communicate with API modal
 
 export async function onRequestPost({ request, env }) {
+  //parsing and validating ingredients
   const { ingredients } = (await request.json()) ?? {}
-  if (ingredients.length === 0) {
+  if (!Array.isArray(ingredients) || ingredients.length === 0) {
     return json({ error: 'Provide an array of ingredients.' }, 400)
   }
 
@@ -12,7 +13,7 @@ export async function onRequestPost({ request, env }) {
   //collecting tokens
   const tokens = (env.HUGGINGFACE_API_KEY || '').trim()
 
-  //invoking Hugging Face AI Modal
+  //invoking Hugging Face Interference API
   const hgFaceRes = await fetch(
     'https://api-inference.huggingface.co/models/flax-community/t5-recipe-generation',
     {
@@ -27,16 +28,17 @@ export async function onRequestPost({ request, env }) {
 
   //checking status
   if (!hgFaceRes.ok) {
-    const text = await hgFaceRes.text()
-    return json({ error: 'HF API Error', details: text }, hgFaceRes.status)
+    const details = await hgFaceRes.text()
+    return json({ error: 'HF API Error', details }, hgFaceRes.status)
   }
 
   //collecting returned recipe
   const [first] = await hgFaceRes.json()
   const recipe = first?.generated_text ?? ''
 
-  return json.stringify({ recipe })
+  return json({ recipe })
 
+  //helper JSON response function
   function json(obj, status = 200) {
     return new Response(JSON.stringify(obj), {
       status,
