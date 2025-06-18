@@ -1,7 +1,7 @@
 export const IngredientList = ({ ingredients, toggleRecipe }) => {
   // ingredient list
-  const ingredientList = ingredients.map((ingredient) => {
-    return <li key={ingredient}>{ingredient}</li>
+  const ingredientList = ingredients.map((ingredient, index) => {
+    return <li key={index}>{ingredient}</li>
   })
   return (
     <section className="ingredients-section">

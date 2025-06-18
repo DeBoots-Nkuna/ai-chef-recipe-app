@@ -11,16 +11,16 @@ export const Main = () => {
   function handleFormSubmit(formData) {
     const ingredient = formData.get('ingredient')
     //updating state
+
+    if (ingredient.length === 0) return
     setIngredients((prevIngredients) => [...prevIngredients, ingredient])
   }
 
   //function to handle display of generated recipe
   async function handleToggleRecipe() {
-    console.log('Generate Recipe Button clicked with recipes: ', ingredients)
-
     //try/catch
     try {
-      const response = await fetch('/api/generate-recipe.js', {
+      const response = await fetch('/api/generate-recipe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ingredients }),
@@ -31,7 +31,6 @@ export const Main = () => {
 
       //retrieving the data
       const data = await response.json()
-      console.log('Recipe from AI: ', data.recipe)
 
       //updating state
       setRecipe(data.recipe)
@@ -39,7 +38,7 @@ export const Main = () => {
     } catch (error) {
       console.error(error.message)
 
-      setRecipe('Oops! Something went wrong')
+      setRecipe('Oops! Something went wrong 😢.')
       setShowRecipe((prevShowRecipe) => !prevShowRecipe)
     }
   }
