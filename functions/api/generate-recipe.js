@@ -8,16 +8,14 @@ export async function onRequestPost({ request, env }) {
   }
 
   //constructing prompt for the modal
-  const prompt =
-    `Generate a recipe using only the following ingredients — do not add any others:\n` +
-    `${ingredients.join(', ')}`
+  const prompt = `Generate a recipe using only: ${ingredients.join(', ')} `
 
   //collecting tokens
   const tokens = (env.HUGGINGFACE_API_KEY || '').trim()
 
   //invoking Hugging Face Interference API
   const hgFaceRes = await fetch(
-    'https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1',
+    'https://api-inference.huggingface.co/models/google/flan-t5-small',
     {
       method: 'POST',
       headers: {
@@ -48,3 +46,6 @@ export async function onRequestPost({ request, env }) {
     })
   }
 }
+
+// demo api modal, usage limited
+//'https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1'
