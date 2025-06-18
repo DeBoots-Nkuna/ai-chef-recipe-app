@@ -6,6 +6,7 @@ export const Main = () => {
   const [ingredients, setIngredients] = useState([])
   const [showRecipe, setShowRecipe] = useState(false)
   const [recipe, setRecipe] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   //function to handle form submission
   function handleFormSubmit(formData) {
@@ -18,6 +19,9 @@ export const Main = () => {
 
   //function to handle display of generated recipe
   async function handleToggleRecipe() {
+    //updating loading state
+    setIsLoading((prevIsLoading) => !prevIsLoading)
+
     //try/catch
     try {
       const response = await fetch('/api/generate-recipe', {
@@ -32,13 +36,20 @@ export const Main = () => {
       //retrieving the data
       const data = await response.json()
 
+      //cleaning returned data
+      const cleanedData = data
+        .replace(/^Generate a recipe[^\n]*\n*\n*/i, '')
+        .trim()
+
       //updating state
-      setRecipe(data.recipe)
+      setRecipe(cleanedData)
       setShowRecipe((prevShowRecipe) => !prevShowRecipe)
     } catch (error) {
       console.error(error.message)
 
-      setRecipe('Oops! Something went wrong 😢.')
+      setRecipe('❗Oops, Something went wrong.')
+    } finally {
+      setIsLoading((prevIsLoading) => !prevIsLoading)
       setShowRecipe((prevShowRecipe) => !prevShowRecipe)
     }
   }
@@ -58,8 +69,11 @@ export const Main = () => {
           toggleRecipe={handleToggleRecipe}
         />
       )}
+
+      {/* loading indicator */}
+      {isLoading && <p className="loading">Cooking up your recipe...</p>}
       {/* display recipe generated. */}
-      {showRecipe && <Recipe recipe={recipe} />}
+      {showRecipe && !isLoading && <Recipe recipe={recipe} />}
     </main>
   )
 }
