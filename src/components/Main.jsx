@@ -35,10 +35,15 @@ export const Main = () => {
         throw new Error(`HTTP Error! Status: ${response.status}`)
 
       //retrieving the data
-      const { recipe } = await response.json()
+      const { recipe: raw } = await response.json()
+
+      //cleaning returned data
+      const cleanedData = raw
+        .replace(/^Generate a recipe[^\n]*\n*\n*/i, '')
+        .trim()
 
       //updating state
-      setRecipe(recipe)
+      setRecipe(cleanedData)
       setShowRecipe(true)
     } catch (error) {
       console.error(error.message)

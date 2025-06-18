@@ -1,56 +1,49 @@
-//api function
-
-export async function onRequestPost({ request }) {
-  // 1) Parse & validate
-  const { ingredients } = (await request.json()) || {}
-  if (!Array.isArray(ingredients) || !ingredients.length) {
-    return new Response(
-      JSON.stringify({ error: 'Please send an array of ingredients.' }),
-      { status: 400, headers: { 'Content-Type': 'application/json' } }
-    )
+//function to communicate with API modal
+export async function onRequestPost({ request, env }) {
+  //parsing and validating ingredients
+  const { ingredients } = (await request.json()) ?? {}
+  if (!Array.isArray(ingredients) || ingredients.length === 0) {
+    return json({ error: 'Provide an array of ingredients.' }, 400)
   }
 
-  // 2) Find a meal that uses those ingredients
-  const filterUrl = `https://www.themealdb.com/api/json/v1/1/filter.php?i=${ingredients.join(
-    ','
-  )}`
-  const filterRes = await fetch(filterUrl)
-  const filterData = await filterRes.json()
-  if (!filterData.meals) {
-    return new Response(JSON.stringify({ error: 'No recipes found.' }), {
-      status: 404,
+  //constructing prompt for the modal
+  const prompt = `Generate a recipe using only: ${ingredients.join(', ')} `
+
+  //collecting tokens
+  const tokens = (env.HUGGINGFACE_API_KEY || '').trim()
+
+  //invoking Hugging Face Interference API
+  const hgFaceRes = await fetch(
+    'https://api-inference.huggingface.co/models/google/flan-t5-small',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${tokens}`,
+      },
+      body: JSON.stringify({ inputs: prompt }),
+    }
+  )
+
+  //checking status
+  if (!hgFaceRes.ok) {
+    const details = await hgFaceRes.text()
+    return json({ error: 'HF API Error', details }, hgFaceRes.status)
+  }
+
+  //collecting returned recipe
+  const [first] = await hgFaceRes.json()
+  const recipe = first?.generated_text ?? ''
+
+  return json({ recipe })
+
+  //helper JSON response function
+  function json(obj, status = 200) {
+    return new Response(JSON.stringify(obj), {
+      status,
       headers: { 'Content-Type': 'application/json' },
     })
   }
-
-  // 3) Get full details for the first match
-  const mealId = filterData.meals[0].idMeal
-  const lookupRes = await fetch(
-    `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`
-  )
-  const lookupData = await lookupRes.json()
-  const meal = lookupData.meals[0]
-
-  // 4) Build a simple JS object
-  const recipe = {
-    title: meal.strMeal,
-    image: meal.strMealThumb,
-    ingredients: [],
-    instructions: meal.strInstructions,
-  }
-
-  // 5) Pull out up to 20 ingredient/measure pairs
-  for (let i = 1; i <= 20; i++) {
-    const ing = meal['strIngredient' + i]
-    const meas = meal['strMeasure' + i]
-    if (ing) {
-      recipe.ingredients.push(`${meas.trim()} ${ing.trim()}`.trim())
-    }
-  }
-
-  // 6) Return JSON
-  return new Response(JSON.stringify(recipe), {
-    status: 200,
-    headers: { 'Content-Type': 'application/json' },
-  })
 }
+
+//'https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1'
