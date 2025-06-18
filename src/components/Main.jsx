@@ -15,9 +15,33 @@ export const Main = () => {
   }
 
   //function to handle display of generated recipe
-  function handleToggleRecipe() {
+  async function handleToggleRecipe() {
     console.log('Generate Recipe Button clicked with recipes: ', ingredients)
-    setShowRecipe((prevShowRecipe) => !prevShowRecipe)
+
+    //try/catch
+    try {
+      const response = await fetch('/functions/generate-recipe.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ingredients }),
+      })
+
+      if (!response.ok)
+        throw new Error(`HTTP Error! Status: ${response.status}`)
+
+      //retrieving the data
+      const data = await response.json()
+      console.log('Recipe from AI: ', data.recipe)
+
+      //updating state
+      setRecipe(data.recipe)
+      setShowRecipe((prevShowRecipe) => !prevShowRecipe)
+    } catch (error) {
+      console.error(error.message)
+
+      setRecipe('Oops! Something went wrong')
+      setShowRecipe((prevShowRecipe) => !prevShowRecipe)
+    }
   }
 
   return (
