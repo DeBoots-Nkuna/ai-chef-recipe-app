@@ -21,6 +21,7 @@ export const Main = () => {
   async function handleToggleRecipe() {
     //updating loading state
     setIsLoading((prevIsLoading) => !prevIsLoading)
+    setShowRecipe(false)
 
     //try/catch
     try {
@@ -34,19 +35,20 @@ export const Main = () => {
         throw new Error(`HTTP Error! Status: ${response.status}`)
 
       //retrieving the data
-      const data = await response.json()
+      const { recipe: raw } = await response.json()
 
       //cleaning returned data
-      const cleanedData = data
+      const cleanedData = raw
         .replace(/^Generate a recipe[^\n]*\n*\n*/i, '')
         .trim()
 
       //updating state
       setRecipe(cleanedData)
-      setShowRecipe((prevShowRecipe) => !prevShowRecipe)
+      setShowRecipe(true)
     } catch (error) {
       console.error(error.message)
       setRecipe('❗Oops, Something went wrong.')
+      setShowRecipe(true)
     } finally {
       setIsLoading((prevIsLoading) => !prevIsLoading)
     }
@@ -71,7 +73,7 @@ export const Main = () => {
       {/* loading indicator */}
       {isLoading && <p className="loading">Cooking up your recipe...</p>}
       {/* display recipe generated. */}
-      {showRecipe && <Recipe recipe={recipe} />}
+      {isLoading && showRecipe && <Recipe recipe={recipe} />}
     </main>
   )
 }
