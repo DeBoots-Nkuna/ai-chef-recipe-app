@@ -20,7 +20,7 @@ export const Main = () => {
 
     //try/catch
     try {
-      const response = await fetch('/functions/generate-recipe.js', {
+      const response = await fetch('/api/generate-recipe.js', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ingredients }),
