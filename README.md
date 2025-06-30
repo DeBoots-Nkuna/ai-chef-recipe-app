@@ -27,7 +27,7 @@ A simple React + Cloudflare Pages app that generates recipes based on ingredient
 ### Instructions
 
 1. **Clone the repo**
-   git clone https://github.com/`<your-username>`/heychef.git
+   https://github.com/DeBoots-Nkuna/ai-chef-recipe-app.git
    cd heychef
 2. Install dependencies
 
